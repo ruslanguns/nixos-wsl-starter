@@ -82,7 +82,6 @@ in {
     homeDirectory = "/home/${username}";
 
     sessionVariables.EDITOR = "nvim";
-    # FIXME: set your preferred $SHELL
     sessionVariables.SHELL = "/etc/profiles/per-user/${username}/bin/fish";
   };
 
@@ -90,7 +89,6 @@ in {
     stable-packages
     ++ unstable-packages
     ++
-    # FIXME: you can add anything else that doesn't fit into the above two lists in here
     [
       # pkgs.some-package
       # pkgs.unstable.some-other-package
@@ -102,7 +100,6 @@ in {
     nix-index.enableFishIntegration = true;
     nix-index-database.comma.enable = true;
 
-    # FIXME: disable this if you don't want to use the starship prompt
     starship.enable = true;
     starship.settings = {
       aws.disabled = true;
@@ -118,7 +115,6 @@ in {
       hostname.style = "bold green";
     };
 
-    # FIXME: disable whatever you don't want
     fzf.enable = true;
     fzf.enableFishIntegration = true;
     lsd.enable = true;
@@ -140,8 +136,8 @@ in {
         side-by-side = true;
         navigate = true;
       };
-      userEmail = ""; # FIXME: set your git email
-      userName = ""; #FIXME: set your git username
+      userEmail = "ruslanguns@gmail.com"; # FIXME: set your git email
+      userName = "Ruslan Gonzalez"; #FIXME: set your git username
       extraConfig = {
         # FIXME: uncomment the next lines if you want to be able to clone private https repos
         # url = {
@@ -165,7 +161,6 @@ in {
       };
     };
 
-    # FIXME: This is my fish config - you can fiddle with it if you want
     fish = {
       enable = true;
       # FIXME: run 'scoop install win32yank' on Windows, then add this line with your Windows username to the bottom of interactiveShellInit
@@ -182,6 +177,11 @@ in {
           + "/extras/kanagawa.fish")}
 
         set -U fish_greeting
+
+        set -l code_path (find ~/.vscode-server/bin -name "code" -type f | head -n 1)
+        if test -n "$code_path"
+          set -gx PATH (dirname $code_path) $PATH
+        end
       '';
       functions = {
         refresh = "source $HOME/.config/fish/config.fish";

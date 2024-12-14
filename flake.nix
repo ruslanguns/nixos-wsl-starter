@@ -15,6 +15,8 @@
   inputs.nix-index-database.url = "github:Mic92/nix-index-database";
   inputs.nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
+  inputs.vscode-server.url = "github:nix-community/nixos-vscode-server";
+
   inputs.jeezyvim.url = "github:LGUG2Z/JeezyVim";
 
   outputs = inputs:
@@ -85,6 +87,7 @@
         username = "rus";
         modules = [
           nixos-wsl.nixosModules.wsl
+          vscode-server.nixosModules.default
           ./wsl.nix
         ];
       };
