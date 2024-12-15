@@ -1,9 +1,9 @@
-{
-  pkgs,
-  username,
-  nix-index-database,
-  ...
-}: let
+{ pkgs
+, username
+, nix-index-database
+, ...
+}:
+let
   unstable-packages = with pkgs.unstable; [
     bat
     bottom
@@ -30,6 +30,7 @@
     zip
     k9s
     krew
+    deno
   ];
 
   stable-packages = with pkgs; [
@@ -76,6 +77,9 @@
     shfmt
     statix # nix
 
+    age.out
+    ssh-to-age
+    sops
     fluxcd
     kind
     kubecolor
@@ -112,9 +116,9 @@
     socat # replacement of openbsd-netcat
     nmap # A utility for network discovery and security auditing
     ipcalc # it is a calculator for the IPv4/v6 addresses
-
   ];
-in {
+in
+{
   imports = [
     nix-index-database.hmModules.nix-index
   ];
@@ -164,7 +168,7 @@ in {
     lsd.enableAliases = true;
     zoxide.enable = true;
     zoxide.enableFishIntegration = true;
-    zoxide.options = ["--cmd cd"];
+    zoxide.options = [ "--cmd cd" ];
     broot.enable = true;
     broot.enableFishIntegration = true;
     direnv.enable = true;
