@@ -1,8 +1,4 @@
-{ pkgs
-, username
-, nix-index-database
-, ...
-}:
+{ pkgs, username, nix-index-database, ... }:
 let
   unstable-packages = with pkgs.unstable; [
     bat

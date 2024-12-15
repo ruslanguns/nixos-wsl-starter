@@ -1,21 +1,13 @@
-{
-  # FIXME: uncomment the next line if you want to reference your GitHub/GitLab access tokens and other secrets
-  # secrets,
-  username
-, hostname
-, pkgs
-, inputs
-, ...
-}: {
-  # FIXME: change to your tz! look it up with "timedatectl list-timezones"
+{ username, hostname, pkgs, config, inputs, ... }: {
+
   time.timeZone = "Europe/Madrid";
 
   networking.hostName = "${hostname}";
 
   programs.fish.enable = true;
+
   environment.pathsToLink = [ "/share/fish" ];
   environment.shells = [ pkgs.fish ];
-
   environment.enableAllTerminfo = true;
 
   security.sudo.wheelNeedsPassword = false;
@@ -23,16 +15,16 @@
   # FIXME: uncomment the next line to enable SSH
   # services.openssh.enable = true;
 
+  # required for password to be set during sysmtem activation
+  users.mutableUsers = false;
   users.users.${username} = {
     isNormalUser = true;
-    # FIXME: change your shell here if you don't want fish
     shell = pkgs.fish;
     extraGroups = [
       "wheel"
-      # FIXME: uncomment the next line if you want to run docker without sudo
       "docker"
     ];
-    # FIXME: add your own hashed password
+    hashedPasswordFile = config.sops.secrets."login_passwords.${username}".path;
     # hashedPassword = "";
     # FIXME: add your own ssh public key
     # openssh.authorizedKeys.keys = [
@@ -42,7 +34,7 @@
 
   home-manager.users.${username} = {
     imports = [
-      ./home.nix
+      ../home/${username}/home.nix
     ];
   };
 
@@ -57,7 +49,7 @@
     startMenuLaunchers = true;
 
     # Enable integration with Docker Desktop (needs to be installed)
-    docker-desktop.enable = false;
+    docker-desktop.enable = true;
   };
 
   # virtualisation.docker = {

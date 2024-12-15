@@ -18,13 +18,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     jeezyvim.url = "github:LGUG2Z/JeezyVim";
+    sops-nix = {
+      url = "github:mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, nur, nixpkgs-unstable, nix-index-database, ... } @ inputs:
     let
       inherit (self) outputs;
 
-      secrets = builtins.fromJSON (builtins.readFile "${self}/secrets.json");
+      variables = builtins.fromJSON (builtins.readFile "${self}/variables.json");
 
       config = {
         allowUnfree = true;
@@ -61,20 +65,14 @@
       };
 
       argDefaults = {
-        inherit secrets inputs self nix-index-database;
+        inherit variables inputs self nix-index-database;
         channels = {
           inherit nixpkgs nixpkgs-unstable;
         };
       };
 
       mkNixosConfiguration =
-        { system ? "x86_64-linux"
-        , hostname
-        , username
-        , args ? { }
-        , modules
-        ,
-        }:
+        { system ? "x86_64-linux", hostname, username, args ? { }, modules, }:
         let
           specialArgs = argDefaults // { inherit hostname username; } // args;
         in
@@ -84,6 +82,7 @@
           modules = [
             (configurationDefaults specialArgs)
             home-manager.nixosModules.home-manager
+            ./common
           ] ++ modules;
         };
     in
@@ -96,7 +95,7 @@
           username = "rus";
           modules = [
             inputs.nixos-wsl.nixosModules.wsl
-            ./wsl.nix
+            ./hosts/wsl.nix
           ];
         };
 
@@ -105,7 +104,7 @@
           username = "rus";
           modules = [
             inputs.nixos-wsl.nixosModules.wsl
-            ./wsl.nix
+            ./hosts/wsl.nix
           ];
         };
       };
