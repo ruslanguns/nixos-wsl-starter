@@ -4,42 +4,54 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager/release-24.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nur.url = "github:nix-community/NUR";
-    nixos-wsl.url = "github:nix-community/NixOS-WSL";
-    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
-    nix-index-database.url = "github:Mic92/nix-index-database";
-    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-index-database = {
+      url = "github:Mic92/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     jeezyvim.url = "github:LGUG2Z/JeezyVim";
   };
 
-  outputs = inputs:
-    with inputs; let
+  outputs = { self, nixpkgs, home-manager, nur, nixpkgs-unstable, nix-index-database, ... } @ inputs:
+    let
+      inherit (self) outputs;
+
       secrets = builtins.fromJSON (builtins.readFile "${self}/secrets.json");
 
-      nixpkgsWithOverlays = system: (import nixpkgs rec {
-        inherit system;
+      config = {
+        allowUnfree = true;
+        permittedInsecurePackages = [ ];
+      };
 
-        config = {
-          allowUnfree = true;
-          permittedInsecurePackages = [
-            # FIXME:: add any insecure packages you absolutely need here
-          ];
-        };
+      systems = [
+        "x86_64-linux"
+        # "aarch64-linux"
+        # "x86_64-darwin"
+      ];
+
+      forAllSystems = nixpkgs.lib.genAttrs systems;
+
+      nixpkgsWithOverlays = system: import nixpkgs {
+        inherit system config;
 
         overlays = [
           nur.overlay
-          jeezyvim.overlays.default
-
+          inputs.jeezyvim.overlays.default
           (_final: prev: {
             unstable = import nixpkgs-unstable {
-              inherit (prev) system;
-              inherit config;
+              inherit system config;
             };
           })
         ];
-      });
+      };
 
       configurationDefaults = args: {
         home-manager.useGlobalPkgs = true;
@@ -55,35 +67,47 @@
         };
       };
 
-      mkNixosConfiguration = {
-        system ? "x86_64-linux",
-        hostname,
-        username,
-        args ? {},
-        modules,
-      }: let
-        specialArgs = argDefaults // {inherit hostname username;} // args;
-      in
+      mkNixosConfiguration =
+        { system ? "x86_64-linux"
+        , hostname
+        , username
+        , args ? { }
+        , modules
+        ,
+        }:
+        let
+          specialArgs = argDefaults // { inherit hostname username; } // args;
+        in
         nixpkgs.lib.nixosSystem {
           inherit system specialArgs;
           pkgs = nixpkgsWithOverlays system;
-          modules =
-            [
-              (configurationDefaults specialArgs)
-              home-manager.nixosModules.home-manager
-            ]
-            ++ modules;
+          modules = [
+            (configurationDefaults specialArgs)
+            home-manager.nixosModules.home-manager
+          ] ++ modules;
         };
-    in {
-      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
+    in
+    {
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-      nixosConfigurations.nixos = mkNixosConfiguration {
-        hostname = "nixos";
-        username = "rus"; # FIXME: replace with your own username!
-        modules = [
-          nixos-wsl.nixosModules.wsl
-          ./wsl.nix
-        ];
+      nixosConfigurations = {
+        "desktop-nixos-01" = mkNixosConfiguration {
+          hostname = "desktop-nixos-01";
+          username = "rus";
+          modules = [
+            inputs.nixos-wsl.nixosModules.wsl
+            ./wsl.nix
+          ];
+        };
+
+        "nixos" = mkNixosConfiguration {
+          hostname = "nixos";
+          username = "rus";
+          modules = [
+            inputs.nixos-wsl.nixosModules.wsl
+            ./wsl.nix
+          ];
+        };
       };
     };
 }
