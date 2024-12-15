@@ -91,8 +91,8 @@
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
       nixosConfigurations = {
-        "desktop-nixos-01" = mkNixosConfiguration {
-          hostname = "desktop-nixos-01";
+        "desktop-wsl-01" = mkNixosConfiguration {
+          hostname = "desktop-wsl-01";
           username = "rus";
           modules = [
             inputs.nixos-wsl.nixosModules.wsl
@@ -100,8 +100,8 @@
           ];
         };
 
-        "desktop-nixos-02" = mkNixosConfiguration {
-          hostname = "desktop-nixos-02";
+        "desktop-wsl-02" = mkNixosConfiguration {
+          hostname = "desktop-wsl-02";
           username = "rus";
           modules = [
             inputs.nixos-wsl.nixosModules.wsl
