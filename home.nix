@@ -33,12 +33,6 @@
   ];
 
   stable-packages = with pkgs; [
-    # FIXME: customize these stable packages to your liking for the languages that you use
-
-    # FIXME: you can add plugins, change keymaps etc using (jeezyvim.nixvimExtend {})
-    # https://github.com/LGUG2Z/JeezyVim#extending
-    jeezyvim
-
     # key tools
     gh # for bootstrapping
     just
@@ -127,63 +121,54 @@ in {
     direnv.enable = true;
     direnv.nix-direnv.enable = true;
 
-    git = {
-      enable = true;
-      package = pkgs.unstable.git;
-      delta.enable = true;
-      delta.options = {
-        line-numbers = true;
-        side-by-side = true;
-        navigate = true;
-      };
-      userEmail = "ruslanguns@gmail.com"; # FIXME: set your git email
-      userName = "Ruslan Gonzalez"; #FIXME: set your git username
-      extraConfig = {
-        # FIXME: uncomment the next lines if you want to be able to clone private https repos
-        # url = {
-        #   "https://oauth2:${secrets.github_token}@github.com" = {
-        #     insteadOf = "https://github.com";
-        #   };
-        #   "https://oauth2:${secrets.gitlab_token}@gitlab.com" = {
-        #     insteadOf = "https://gitlab.com";
-        #   };
-        # };
-        push = {
-          default = "current";
-          autoSetupRemote = true;
-        };
-        merge = {
-          conflictstyle = "diff3";
-        };
-        diff = {
-          colorMoved = "default";
-        };
-      };
-    };
+    # git = {
+    #   enable = true;
+    #   package = pkgs.unstable.git;
+    #   delta.enable = true;
+    #   delta.options = {
+    #     line-numbers = true;
+    #     side-by-side = true;
+    #     navigate = true;
+    #   };
+    #   userEmail = "ruslanguns@gmail.com"; # FIXME: set your git email
+    #   userName = "Ruslan Gonzalez"; #FIXME: set your git username
+    #   extraConfig = {
+    #     push = {
+    #       default = "current";
+    #       autoSetupRemote = true;
+    #     };
+    #     merge = {
+    #       conflictstyle = "diff3";
+    #     };
+    #     diff = {
+    #       colorMoved = "default";
+    #     };
+    #   };
+    # };
 
     fish = {
-      enable = true;
+      enable = false;
       # FIXME: run 'scoop install win32yank' on Windows, then add this line with your Windows username to the bottom of interactiveShellInit
       # fish_add_path --append /mnt/c/Users/<Your Windows Username>/scoop/apps/win32yank/0.1.1
-      interactiveShellInit = ''
-        ${pkgs.any-nix-shell}/bin/any-nix-shell fish --info-right | source
+      # interactiveShellInit = ''
+      #   ${pkgs.any-nix-shell}/bin/any-nix-shell fish --info-right | source
 
-        ${pkgs.lib.strings.fileContents (pkgs.fetchFromGitHub {
-            owner = "rebelot";
-            repo = "kanagawa.nvim";
-            rev = "de7fb5f5de25ab45ec6039e33c80aeecc891dd92";
-            sha256 = "sha256-f/CUR0vhMJ1sZgztmVTPvmsAgp0kjFov843Mabdzvqo=";
-          }
-          + "/extras/kanagawa.fish")}
+      #   ${pkgs.lib.strings.fileContents (pkgs.fetchFromGitHub {
+      #       owner = "rebelot";
+      #       repo = "kanagawa.nvim";
+      #       rev = "de7fb5f5de25ab45ec6039e33c80aeecc891dd92";
+      #       sha256 = "sha256-f/CUR0vhMJ1sZgztmVTPvmsAgp0kjFov843Mabdzvqo=";
+      #     }
+      #     + "/extras/kanagawa.fish")}
 
-        set -U fish_greeting
+      #   set -l code_path (find ~/.vscode-server/bin -name "code" -type f | head -n 1)
+      #   if test -n "$code_path"
+      #     set -gx PATH (dirname $code_path) $PATH
+      #   end
 
-        set -l code_path (find ~/.vscode-server/bin -name "code" -type f | head -n 1)
-        if test -n "$code_path"
-          set -gx PATH (dirname $code_path) $PATH
-        end
-      '';
-      functions = {
+      #   set -U fish_greeting
+      # '';
+      # functions = {
         refresh = "source $HOME/.config/fish/config.fish";
         take = ''mkdir -p -- "$1" && cd -- "$1"'';
         ttake = "cd $(mktemp -d)";
@@ -195,54 +180,52 @@ in {
           end
         '';
       };
-      shellAbbrs =
-        {
-          gc = "nix-collect-garbage --delete-old";
-        }
-        # navigation shortcuts
-        // {
-          ".." = "cd ..";
-          "..." = "cd ../../";
-          "...." = "cd ../../../";
-          "....." = "cd ../../../../";
-        }
-        # git shortcuts
-        // {
-          gapa = "git add --patch";
-          grpa = "git reset --patch";
-          gst = "git status";
-          gdh = "git diff HEAD";
-          gp = "git push";
-          gph = "git push -u origin HEAD";
-          gco = "git checkout";
-          gcob = "git checkout -b";
-          gcm = "git checkout master";
-          gcd = "git checkout develop";
-          gsp = "git stash push -m";
-          gsa = "git stash apply stash^{/";
-          gsl = "git stash list";
-        };
-      shellAliases = {
-        jvim = "nvim";
-        lvim = "nvim";
-        pbcopy = "/mnt/c/Windows/System32/clip.exe";
-        pbpaste = "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -command 'Get-Clipboard'";
-        explorer = "/mnt/c/Windows/explorer.exe";
-      };
-      plugins = [
-        {
-          inherit (pkgs.fishPlugins.autopair) src;
-          name = "autopair";
-        }
-        {
-          inherit (pkgs.fishPlugins.done) src;
-          name = "done";
-        }
-        {
-          inherit (pkgs.fishPlugins.sponge) src;
-          name = "sponge";
-        }
-      ];
+      # shellAbbrs =
+      #   {
+      #     gc = "nix-collect-garbage --delete-old";
+      #   }
+      #   # navigation shortcuts
+      #   // {
+      #     ".." = "cd ..";
+      #     "..." = "cd ../../";
+      #     "...." = "cd ../../../";
+      #     "....." = "cd ../../../../";
+      #   }
+      #   # git shortcuts
+      #   // {
+      #     gapa = "git add --patch";
+      #     grpa = "git reset --patch";
+      #     gst = "git status";
+      #     gdh = "git diff HEAD";
+      #     gp = "git push";
+      #     gph = "git push -u origin HEAD";
+      #     gco = "git checkout";
+      #     gcob = "git checkout -b";
+      #     gcm = "git checkout master";
+      #     gcd = "git checkout develop";
+      #     gsp = "git stash push -m";
+      #     gsa = "git stash apply stash^{/";
+      #     gsl = "git stash list";
+      #   };
+      # shellAliases = {
+      #   pbcopy = "/mnt/c/Windows/System32/clip.exe";
+      #   pbpaste = "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -command 'Get-Clipboard'";
+      #   explorer = "/mnt/c/Windows/explorer.exe";
+      # };
+      # plugins = [
+      #   {
+      #     inherit (pkgs.fishPlugins.autopair) src;
+      #     name = "autopair";
+      #   }
+      #   {
+      #     inherit (pkgs.fishPlugins.done) src;
+      #     name = "done";
+      #   }
+      #   {
+      #     inherit (pkgs.fishPlugins.sponge) src;
+      #     name = "sponge";
+      #   }
+      # ];
     };
   };
 }
