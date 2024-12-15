@@ -13,8 +13,8 @@
     secrets = {
       "users/${username}/password".neededForUsers = true;
       "users/${username}/ssh_private_key" = {
-        owner = username.name;
-        inherit (username) group;
+        owner = username;
+        mode = "0600";
         path = "/home/${username}/.ssh/id_ed25519";
       };
     };
