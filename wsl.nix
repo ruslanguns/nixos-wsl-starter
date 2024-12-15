@@ -1,11 +1,11 @@
 {
   # FIXME: uncomment the next line if you want to reference your GitHub/GitLab access tokens and other secrets
   # secrets,
-  username,
-  hostname,
-  pkgs,
-  inputs,
-  ...
+  username
+, hostname
+, pkgs
+, inputs
+, ...
 }: {
   # FIXME: change to your tz! look it up with "timedatectl list-timezones"
   time.timeZone = "Europe/Madrid";
@@ -13,8 +13,8 @@
   networking.hostName = "${hostname}";
 
   programs.fish.enable = true;
-  environment.pathsToLink = ["/share/fish"];
-  environment.shells = [pkgs.fish];
+  environment.pathsToLink = [ "/share/fish" ];
+  environment.shells = [ pkgs.fish ];
 
   environment.enableAllTerminfo = true;
 
@@ -60,18 +60,18 @@
     docker-desktop.enable = false;
   };
 
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = true;
-    autoPrune.enable = true;
-  };
+  # virtualisation.docker = {
+  #   enable = true;
+  #   enableOnBoot = true;
+  #   autoPrune.enable = true;
+  # };
 
   # FIXME: uncomment the next block to make vscode running in Windows "just work" with NixOS on WSL
   # solution adapted from: https://github.com/K900/vscode-remote-workaround
   # more information: https://github.com/nix-community/NixOS-WSL/issues/238 and https://github.com/nix-community/NixOS-WSL/issues/294
   systemd.user = {
     paths.vscode-remote-workaround = {
-      wantedBy = ["default.target"];
+      wantedBy = [ "default.target" ];
       pathConfig.PathChanged = "%h/.vscode-server/bin";
     };
     services.vscode-remote-workaround.script = ''
@@ -86,7 +86,7 @@
 
   nix = {
     settings = {
-      trusted-users = [username];
+      trusted-users = [ username ];
       # FIXME: use your access tokens from secrets.json here to be able to clone private repos on GitHub and GitLab
       # access-tokens = [
       #   "github.com=${secrets.github_token}"

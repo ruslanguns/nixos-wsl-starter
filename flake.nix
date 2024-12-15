@@ -100,8 +100,8 @@
           ];
         };
 
-        "nixos" = mkNixosConfiguration {
-          hostname = "nixos";
+        "desktop-nixos-02" = mkNixosConfiguration {
+          hostname = "desktop-nixos-02";
           username = "rus";
           modules = [
             inputs.nixos-wsl.nixosModules.wsl
