@@ -82,7 +82,6 @@
           modules = [
             (configurationDefaults specialArgs)
             home-manager.nixosModules.home-manager
-            ./common
           ] ++ modules;
         };
     in
@@ -95,7 +94,8 @@
           username = "rus";
           modules = [
             inputs.nixos-wsl.nixosModules.wsl
-            ./hosts/wsl.nix
+            ./common
+            ./hosts/nixos/wsl.nix
           ];
         };
 
@@ -104,7 +104,8 @@
           username = "rus";
           modules = [
             inputs.nixos-wsl.nixosModules.wsl
-            ./hosts/wsl.nix
+            ./common
+            ./hosts/nixos/wsl.nix
           ];
         };
       };

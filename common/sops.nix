@@ -8,12 +8,15 @@
     defaultSopsFile = ../secrets.yaml;
     validateSopsFiles = false;
 
-    age = {
-      sshKeyPaths = [ "/home/${username}/.ssh/id_ed25519" ];
-    };
+    age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
 
     secrets = {
-      "login_passwords.${username}".neededForUsers = true;
+      "users/${username}/password".neededForUsers = true;
+      "users/${username}/ssh_private_key" = {
+        owner = username.name;
+        inherit (username) group;
+        path = "/home/${username}/.ssh/id_ed25519";
+      };
     };
   };
 }

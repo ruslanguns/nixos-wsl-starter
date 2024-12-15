@@ -24,8 +24,8 @@
       "wheel"
       "docker"
     ];
-    hashedPasswordFile = config.sops.secrets."login_passwords.${username}".path;
-    # hashedPassword = "";
+    hashedPasswordFile = config.sops.secrets."users/${username}/password".path;
+    # hashedPassword = " ";
     # FIXME: add your own ssh public key
     # openssh.authorizedKeys.keys = [
     #   "ssh-rsa ..."
@@ -34,7 +34,7 @@
 
   home-manager.users.${username} = {
     imports = [
-      ../home/${username}/home.nix
+      ../../home/${username}/home.nix
     ];
   };
 
