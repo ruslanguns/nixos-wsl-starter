@@ -7,6 +7,7 @@
   inputs,
   ...
 }: {
+  # FIXME: change to your tz! look it up with "timedatectl list-timezones"
   time.timeZone = "Europe/Madrid";
 
   networking.hostName = "${hostname}";
@@ -24,9 +25,11 @@
 
   users.users.${username} = {
     isNormalUser = true;
+    # FIXME: change your shell here if you don't want fish
     shell = pkgs.fish;
     extraGroups = [
       "wheel"
+      # FIXME: uncomment the next line if you want to run docker without sudo
       "docker"
     ];
     # FIXME: add your own hashed password
@@ -54,10 +57,7 @@
     startMenuLaunchers = true;
 
     # Enable integration with Docker Desktop (needs to be installed)
-    docker-desktop.enable = true;
-    extraBin = with pkgs; [
-      # code
-    ];
+    docker-desktop.enable = false;
   };
 
   virtualisation.docker = {
@@ -65,9 +65,6 @@
     enableOnBoot = true;
     autoPrune.enable = true;
   };
-
-  programs.nix-ld.enable = true;
-  services.vscode-server.enable = true;
 
   # FIXME: uncomment the next block to make vscode running in Windows "just work" with NixOS on WSL
   # solution adapted from: https://github.com/K900/vscode-remote-workaround
@@ -78,12 +75,12 @@
       pathConfig.PathChanged = "%h/.vscode-server/bin";
     };
     services.vscode-remote-workaround.script = ''
-     for i in ~/.vscode-server/bin/*; do
+      for i in ~/.vscode-server/bin/*; do
         if [ -e $i/node ]; then
           echo "Fixing vscode-server in $i..."
           ln -sf ${pkgs.nodejs_18}/bin/node $i/node
         fi
-     done
+      done
     '';
   };
 

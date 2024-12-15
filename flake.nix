@@ -1,23 +1,18 @@
 {
   description = "NixOS configuration";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
-  inputs.nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-
-  inputs.home-manager.url = "github:nix-community/home-manager/release-24.05";
-  inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-  inputs.nur.url = "github:nix-community/NUR";
-
-  inputs.nixos-wsl.url = "github:nix-community/NixOS-WSL";
-  inputs.nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
-
-  inputs.nix-index-database.url = "github:Mic92/nix-index-database";
-  inputs.nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
-
-  inputs.vscode-server.url = "github:nix-community/nixos-vscode-server";
-
-  inputs.jeezyvim.url = "github:LGUG2Z/JeezyVim";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager.url = "github:nix-community/home-manager/release-24.05";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nur.url = "github:nix-community/NUR";
+    nixos-wsl.url = "github:nix-community/NixOS-WSL";
+    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
+    nix-index-database.url = "github:Mic92/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    jeezyvim.url = "github:LGUG2Z/JeezyVim";
+  };
 
   outputs = inputs:
     with inputs; let
@@ -84,10 +79,9 @@
 
       nixosConfigurations.nixos = mkNixosConfiguration {
         hostname = "nixos";
-        username = "rus";
+        username = "rus"; # FIXME: replace with your own username!
         modules = [
           nixos-wsl.nixosModules.wsl
-          vscode-server.nixosModules.default
           ./wsl.nix
         ];
       };
