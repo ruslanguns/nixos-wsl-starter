@@ -12,6 +12,7 @@
 
     secrets = {
       "users/${username}/password".neededForUsers = true;
+      # Not in use if it's a good idea... better to have unique keys for each instance/user
       "users/${username}/ssh_private_key" = {
         owner = username;
         mode = "0600";
